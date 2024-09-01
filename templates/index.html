@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TapTop - The Ultimate Territory Battle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <!-- Google AdSense Code -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7023446876404998"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="background-effect"></div>
+    <div id="game-container">
+        <div id="left-panel">
+            <h1 id="game-title">TapTop</h1>
+            <div id="game-subtitle">The Ultimate Territory Battle</div>
+            <div id="team-selection">
+                <button id="red-team">Join Red Team</button>
+                <button id="blue-team">Join Blue Team</button>
+            </div>
+            <div id="battlefield" style="display: none;">
+                <button id="back-button">Back to Lobby</button>
+                <div id="score">
+                    <span id="red-score">Red: 0</span>
+                    <span id="blue-score">Blue: 0</span>
+                </div>
+                <div id="large-chronometer"></div>
+                {% if show_ads %}
+                <div id="ad-above-map" class="ad-space">
+                    <p>AD SPACE: Banner ad above the game map (728x90)</p>
+                </div>
+                {% endif %}
+                <div id="map"></div>
+                <div id="superpower-display" style="display: none;"></div>
+            </div>
+            <div id="progress-bar"></div>
+            <div id="instructions">
+                <h2>Game Stats</h2>
+                <!-- Game stats will be inserted here by JavaScript -->
+            </div>
+        </div>
+        <div id="right-panel">
+            <div id="leaderboard">
+                <h2>Top Players</h2>
+                <ul id="leaderboard-list"></ul>
+            </div>
+            <div id="chat-container" style="display: none;">
+                <h2>Team Chat</h2>
+                <div id="chat-messages"></div>
+                <div id="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Type your message...">
+                    <button id="send-message">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const initialState = {{ initial_state|tojson|safe }};
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const showAds = {{ show_ads|tojson|safe }};
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
