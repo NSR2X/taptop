@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_socketio import SocketIO
+from flask_cors import CORS
 try:
     from flask_wtf.csrf import CSRFProtect
 except ImportError:
@@ -14,12 +15,14 @@ def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     
+    CORS(app, resources={r"/*": {"origins": "*"}}))
+    
     if CSRFProtect is not None:
         csrf = CSRFProtect(app)
     else:
         print("CSRF protection is disabled. Install Flask-WTF for enhanced security.")
     
-    socketio = SocketIO(app)
+    socketio = SocketIO(app, cors_allowed_origins="*")
     
     game_state = GameState(538)  # Initialize with 538 territories
     
@@ -28,11 +31,8 @@ def create_app(config_name='default'):
     
     return app, socketio
 
-# Use this to run with ads disabled (development mode)
-app, socketio = create_app('development')
-
-# Or use this to run with ads enabled (production mode)
-# app, socketio = create_app('production')
+# Use this to run with ads enabled (production mode)
+app, socketio = create_app('production')
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=False)

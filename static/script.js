@@ -1,7 +1,8 @@
 const socket = io({
     auth: {
         csrf_token: csrfToken
-    }
+    },
+    transports: ['websocket', 'polling']
 });
 
 let playerTeam = null;
