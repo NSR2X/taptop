@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3>Advanced Stats</h3>
                     <p>Avg. Territories/Player: ${avgTerritoriesPerPlayer}</p>
                     <p>Most Active Player: ${mostActivePlayer.nickname} (${mostActivePlayer.score} territories)</p>
-                    <p>Longest Streak: ${longestPlayerStreak.nickname} (${longestPlayerStreak.streak} territories)</p>
+                    <p>Longest Player Streak: ${longestPlayerStreak.nickname} (${longestPlayerStreak.streak} territories)</p>
                     <p>Last Victory: ${lastVictory}</p>
                 </div>
             </div>
@@ -139,6 +139,52 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.game_start_time) {
             gameStartTime = new Date(data.game_start_time);
             startGameTimer();
+        }
+    }
+
+    // Add this function to handle the game timer
+    function startGameTimer() {
+        if (gameTimer) {
+            clearInterval(gameTimer);
+        }
+        updateGameTimerDisplay();
+        gameTimer = setInterval(updateGameTimerDisplay, 1000);
+    }
+
+    function updateGameTimerDisplay() {
+        if (!gameStartTime) return;
+
+        const now = new Date();
+        const timeDiff = now - gameStartTime;
+        
+        const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+        const timerElement = document.getElementById('large-chronometer');
+        if (timerElement) {
+            timerElement.innerHTML = `
+                <div class="chrono-unit">
+                    <span class="chrono-value">${days.toString().padStart(2, '0')}</span>
+                    <span class="chrono-label">Days</span>
+                </div>
+                <div class="chrono-separator">:</div>
+                <div class="chrono-unit">
+                    <span class="chrono-value">${hours.toString().padStart(2, '0')}</span>
+                    <span class="chrono-label">Hours</span>
+                </div>
+                <div class="chrono-separator">:</div>
+                <div class="chrono-unit">
+                    <span class="chrono-value">${minutes.toString().padStart(2, '0')}</span>
+                    <span class="chrono-label">Minutes</span>
+                </div>
+                <div class="chrono-separator">:</div>
+                <div class="chrono-unit">
+                    <span class="chrono-value">${seconds.toString().padStart(2, '0')}</span>
+                    <span class="chrono-label">Seconds</span>
+                </div>
+            `;
         }
     }
 
