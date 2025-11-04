@@ -15,6 +15,9 @@
 </head>
 <body>
     <div id="background-effect"></div>
+    <div id="particles-container"></div>
+    <div id="achievement-notifications"></div>
+    <div id="combo-display" style="display: none;"></div>
     <div id="game-container">
         <div id="left-panel">
             <h1 id="game-title">TapTop</h1>
@@ -22,14 +25,34 @@
             <div id="team-selection">
                 <button id="red-team">Join Red Team</button>
                 <button id="blue-team">Join Blue Team</button>
+                <div id="game-mode-selector" style="margin-top: 20px;">
+                    <h3 style="color: #2c3e50;">Select Game Mode:</h3>
+                    <select id="mode-select" style="padding: 10px; font-size: 14px; border-radius: 5px;">
+                        <option value="classic">Classic Mode</option>
+                        <option value="time_attack">Time Attack (5 min)</option>
+                        <option value="king_of_the_hill">King of the Hill</option>
+                    </select>
+                </div>
             </div>
             <div id="battlefield" style="display: none;">
                 <button id="back-button">Back to Lobby</button>
+                <button id="sound-toggle" title="Toggle Sound" style="position: absolute; top: 10px; right: 120px; background-color: #3498db; padding: 8px 15px;">🔊</button>
                 <div id="score">
                     <span id="red-score">Red: 0</span>
                     <span id="blue-score">Blue: 0</span>
                 </div>
                 <div id="large-chronometer"></div>
+                <div id="power-ups-container" style="margin: 15px 0;">
+                    <h3 style="color: #2c3e50; margin-bottom: 10px;">Power-Ups</h3>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+                        <button class="power-up-btn" data-power="bomb" title="Bomb: Capture 5 random territories">💣 <span class="power-count">0</span></button>
+                        <button class="power-up-btn" data-power="shield" title="Shield: Protect your territories for 10s">🛡️ <span class="power-count">0</span></button>
+                        <button class="power-up-btn" data-power="lightning" title="Lightning: Steal 3 enemy territories">⚡ <span class="power-count">0</span></button>
+                        <button class="power-up-btn" data-power="chaos" title="Chaos: Randomly swap 10 territories">🌀 <span class="power-count">0</span></button>
+                        <button class="power-up-btn" data-power="freeze" title="Freeze: Freeze opponents for 5s">❄️ <span class="power-count">0</span></button>
+                        <button class="power-up-btn" data-power="rainbow" title="Rainbow: Capture 8 random territories">🌈 <span class="power-count">0</span></button>
+                    </div>
+                </div>
                 {% if show_ads %}
                 <div id="ad-above-map" class="ad-space">
                     <p>AD SPACE: Banner ad above the game map (728x90)</p>
