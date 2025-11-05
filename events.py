@@ -57,11 +57,19 @@ def init_app(socketio, game_state):
         player_id = request.sid
         
         if action == 'claim':
+            # Check if territory is already owned by this team
+            already_owned = (team == 'red' and game_state.red[territory_id]) or \
+                          (team == 'blue' and game_state.blue[territory_id])
+
+            if already_owned:
+                # Can't claim your own territory
+                return
+
             if not game_state.game_started:
                 game_state.game_started = True
                 game_state.game_start_time = datetime.now()
                 emit('game_started', {'start_time': game_state.game_start_time.isoformat()}, broadcast=True)
-            
+
             opponent_team = 'blue' if team == 'red' else 'red'
             if game_state.red[territory_id] if opponent_team == 'red' else game_state.blue[territory_id]:
                 if opponent_team == 'red':

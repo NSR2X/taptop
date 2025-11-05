@@ -567,6 +567,11 @@ function captureTerritory(idx, player) {
 
     const currentOwner = gameState.territories[idx];
 
+    // Check if already owned by this player
+    if (currentOwner === player) {
+        return; // Can't capture your own territory
+    }
+
     // Check if protected
     if (gameState.protectedTerritories.has(idx) && currentOwner !== player) {
         if (player === 'player') {
