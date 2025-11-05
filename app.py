@@ -24,7 +24,7 @@ def create_app(config_name='default'):
     
     socketio = SocketIO(app, cors_allowed_origins="*")
     
-    game_state = GameState(538)  # Initialize with 538 territories
+    game_state = GameState(100)  # Initialize with 100 territories (10x10 grid)
     
     routes.init_app(app, game_state)
     events.init_app(socketio, game_state)

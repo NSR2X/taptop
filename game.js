@@ -1,7 +1,7 @@
 // 🎮 TapTop - Single Player vs AI
 // The most AWESOME territory battle game!
 
-const TERRITORY_COUNT = 538;
+const TERRITORY_COUNT = 100;
 let soundEnabled = true;
 let gameState = {
     territories: Array(TERRITORY_COUNT).fill(null), // null, 'player', 'ai'

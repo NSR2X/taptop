@@ -7,7 +7,7 @@ const socket = io({
 
 let playerTeam = null;
 let playerNickname = null;
-const territoryCount = 538;
+const territoryCount = 100;
 let gameStartTime = null;
 let gameTimer = null;
 let soundEnabled = true;
