@@ -358,10 +358,10 @@ function handleLightningPowerUp(player) {
             gameState.territories[idx] = player;
             if (player === 'player') {
                 gameState.playerScore++;
-                gameState.aiScore--;
+                gameState.aiScore = Math.max(0, gameState.aiScore - 1);
             } else {
                 gameState.aiScore++;
-                gameState.playerScore--;
+                gameState.playerScore = Math.max(0, gameState.playerScore - 1);
             }
 
             const element = document.getElementById(`territory-${idx}`);
@@ -389,6 +389,7 @@ function handleChaosPowerUp() {
         const playerIdx = playerTerritories[Math.floor(Math.random() * playerTerritories.length)];
         const aiIdx = aiTerritories[Math.floor(Math.random() * aiTerritories.length)];
 
+        // Swap territories (scores stay same since it's 1:1 exchange)
         gameState.territories[playerIdx] = 'ai';
         gameState.territories[aiIdx] = 'player';
     }
@@ -567,6 +568,11 @@ function captureTerritory(idx, player) {
 
     const currentOwner = gameState.territories[idx];
 
+    // Check if already owned by this player
+    if (currentOwner === player) {
+        return; // Can't capture your own territory
+    }
+
     // Check if protected
     if (gameState.protectedTerritories.has(idx) && currentOwner !== player) {
         if (player === 'player') {
@@ -579,10 +585,10 @@ function captureTerritory(idx, player) {
     if (currentOwner !== null && currentOwner !== player) {
         // Stealing from opponent
         if (currentOwner === 'player') {
-            gameState.playerScore--;
+            gameState.playerScore = Math.max(0, gameState.playerScore - 1);
             gameState.playerStreak = 0;
         } else {
-            gameState.aiScore--;
+            gameState.aiScore = Math.max(0, gameState.aiScore - 1);
             gameState.aiStreak = 0;
         }
     }

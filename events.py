@@ -57,11 +57,19 @@ def init_app(socketio, game_state):
         player_id = request.sid
         
         if action == 'claim':
+            # Check if territory is already owned by this team
+            already_owned = (team == 'red' and game_state.red[territory_id]) or \
+                          (team == 'blue' and game_state.blue[territory_id])
+
+            if already_owned:
+                # Can't claim your own territory
+                return
+
             if not game_state.game_started:
                 game_state.game_started = True
                 game_state.game_start_time = datetime.now()
                 emit('game_started', {'start_time': game_state.game_start_time.isoformat()}, broadcast=True)
-            
+
             opponent_team = 'blue' if team == 'red' else 'red'
             if game_state.red[territory_id] if opponent_team == 'red' else game_state.blue[territory_id]:
                 if opponent_team == 'red':
@@ -70,7 +78,7 @@ def init_app(socketio, game_state):
                     game_state.blue[territory_id] = False
                 for pid, pdata in game_state.players.items():
                     if pdata['team'] == opponent_team and territory_id in pdata['territories']:
-                        pdata['score'] -= 1
+                        pdata['score'] = max(0, pdata['score'] - 1)
                         del pdata['territories'][territory_id]
                         break
             
@@ -120,7 +128,7 @@ def init_app(socketio, game_state):
                 else:
                     game_state.blue[territory_id] = False
                 if territory_id in game_state.players[player_id]['territories']:
-                    game_state.players[player_id]['score'] -= 1
+                    game_state.players[player_id]['score'] = max(0, game_state.players[player_id]['score'] - 1)
                     del game_state.players[player_id]['territories'][territory_id]
             
             # Reset current streak and combo on unclaim
@@ -222,7 +230,7 @@ def init_app(socketio, game_state):
                 # Find and update opponent player score
                 for pid, pdata in game_state.players.items():
                     if pdata['team'] == opponent_team and tid in pdata['territories']:
-                        pdata['score'] -= 1
+                        pdata['score'] = max(0, pdata['score'] - 1)
                         del pdata['territories'][tid]
                         break
 
@@ -259,11 +267,21 @@ def init_app(socketio, game_state):
                 # Update player territories and scores
                 for pid, pdata in game_state.players.items():
                     if pdata['team'] == 'red' and red_tid in pdata['territories']:
-                        pdata['score'] -= 1
+                        pdata['score'] = max(0, pdata['score'] - 1)
                         del pdata['territories'][red_tid]
                     if pdata['team'] == 'blue' and blue_tid in pdata['territories']:
-                        pdata['score'] -= 1
+                        pdata['score'] = max(0, pdata['score'] - 1)
                         del pdata['territories'][blue_tid]
+
+                # Assign swapped territories to the player who used the power-up
+                if team == 'blue':
+                    # Blue team receives red_tid
+                    game_state.players[player_id]['score'] += 1
+                    game_state.players[player_id]['territories'][red_tid] = True
+                else:  # team == 'red'
+                    # Red team receives blue_tid
+                    game_state.players[player_id]['score'] += 1
+                    game_state.players[player_id]['territories'][blue_tid] = True
 
             emit('power_up_effect', {
                 'type': 'chaos',
